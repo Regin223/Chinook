@@ -16,7 +16,7 @@ namespace Chinook.Repositories
             if (user)
                 dataSource = "N-SE-01-3007\\SQLEXPRESS";
             else
-                dataSource = "";
+                dataSource = "DESKTOP-MKQHIVD\\SQLEXPRESS";
             connectionStringBuilder.DataSource = dataSource;
             connectionStringBuilder.InitialCatalog = "Chinook";
             connectionStringBuilder.IntegratedSecurity = true;

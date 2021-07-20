@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace Chinook.Models
 {
-    class Customer
+    public class Customer
     {
         public int Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Country { get; set; }
-        public string PostalCode { get; set; }
-        public string PhoneNumber { get; set; }
+        public string? PostalCode { get; set; }
+        public string? PhoneNumber { get; set; }
         public string Email { get; set; }
     }
 }
