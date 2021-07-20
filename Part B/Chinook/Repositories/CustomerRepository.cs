@@ -177,18 +177,135 @@ namespace Chinook.Repositories
             return customerList;
 
         }
+        public List<CustomerCountry> GetNumberOfCustomerInEachCountry()
+        {
+            List<CustomerCountry> customersByCountries = new List<CustomerCountry>();
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                {
+                    connection.Open();
+                    string sqlQuery = "SELECT Country, COUNT(*) AS NumberInCountry FROM Customer GROUP BY Country ORDER BY NumberInCountry DESC";
+                    using (SqlCommand cmd = new SqlCommand(sqlQuery, connection))
+                    {
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                CustomerCountry customerByCountry = new CustomerCountry()
+                                {
+                                    Country = reader.IsDBNull(0) ? "null" : reader.GetString(0),
+                                    NumberOfCustomers = reader.IsDBNull(1) ? 0 : reader.GetInt32(1)
+                                };
+                                customersByCountries.Add(customerByCountry);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            return customersByCountries;
+        }
+        public List<CustomerSpender> GetHighestSpenders()
+        {
+            List<CustomerSpender> customerSpenders = new List<CustomerSpender>();
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                {
+                    connection.Open();
+                    string sqlQuery = "SELECT Customer.CustomerId, Customer.FirstName,Invoice.Total FROM Customer INNER JOIN Invoice ON Customer.CustomerId = Invoice.CustomerId " +
+                        "ORDER BY Total DESC";
+                    using (SqlCommand cmd = new SqlCommand(sqlQuery, connection))
+                    {
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                CustomerSpender customerSpender = new CustomerSpender()
+                                {
+                                    Id = reader.IsDBNull(0) ? 0 : reader.GetInt32(0),
+                                    FirstName = reader.IsDBNull(1) ? "null" : reader.GetString(1),
+                                    TotalSpending = reader.IsDBNull(0) ? 0 : reader.GetDecimal(2),
+                                };
+                                customerSpenders.Add(customerSpender);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            return customerSpenders;
+        }
 
         public bool Add(Customer entity)
         {
-            throw new NotImplementedException();
+            bool returnValue = false;
+            try
+            {
+                
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                {
+                    connection.Open();
+                    string sqlQuery = "INSERT INTO Customer (FirstName, LastName, Country, PostalCode, Phone, Email) " +
+                        "VALUES (@firstName, @lastName, @country, @postalCode, @phone, @email)";
+                    using (SqlCommand cmd = new SqlCommand(sqlQuery, connection))
+                    {
+                        cmd.Parameters.AddWithValue("@firstName", entity.FirstName);
+                        cmd.Parameters.AddWithValue("@lastName", entity.LastName);
+                        cmd.Parameters.AddWithValue("@country", entity.Country);
+                        cmd.Parameters.AddWithValue("@postalCode", entity.PostalCode);
+                        cmd.Parameters.AddWithValue("@phone", entity.PhoneNumber);
+                        cmd.Parameters.AddWithValue("@email", entity.Email);
+
+                        returnValue = cmd.ExecuteNonQuery() > 0;
+                    }
+                }
+               
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            return returnValue;
         }
         public bool Edit(Customer entity)
         {
-            throw new NotImplementedException();
+            bool returnValue = false;
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                {
+                    connection.Open();
+                    string sqlQuery = "UPDATE Customer SET FirstName = @firstName, LastName = @lastName, Country = @country, PostalCode = @postalCode, Phone = @phone, Email = @email " +
+                        "where CustomerId = @id";
+               
+                    using (SqlCommand cmd = new SqlCommand(sqlQuery, connection))
+                    {
+                        cmd.Parameters.AddWithValue("@id", entity.Id);
+                        cmd.Parameters.AddWithValue("@firstName", entity.FirstName);
+                        cmd.Parameters.AddWithValue("@lastName", entity.LastName);
+                        cmd.Parameters.AddWithValue("@country", entity.Country);
+                        cmd.Parameters.AddWithValue("@postalCode", entity.PostalCode);
+                        cmd.Parameters.AddWithValue("@phone", entity.PhoneNumber);
+                        cmd.Parameters.AddWithValue("@email", entity.Email);
+
+                        returnValue = cmd.ExecuteNonQuery() > 0;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            return returnValue;
         }
-        public bool Delete(Customer entity)
-        {
-            throw new NotImplementedException();
-        }
+  
     }
 }

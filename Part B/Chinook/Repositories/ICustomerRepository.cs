@@ -12,5 +12,9 @@ namespace Chinook.Repositories
         public List<Customer> GetCustomerByName(string firstName);
 
         public List<Customer> GetCustomerPage(int limit, int offset);
+
+        public List<CustomerCountry> GetNumberOfCustomerInEachCountry();
+
+        public List<CustomerSpender> GetHighestSpenders();
     }
 }
