@@ -9,6 +9,8 @@ namespace Chinook.Repositories
 {
     public interface ICustomerRepository : IRepository<Customer>
     {
+        public List<Customer> GetCustomerByName(string firstName);
 
+        public List<Customer> GetCustomerPage(int limit, int offset);
     }
 }

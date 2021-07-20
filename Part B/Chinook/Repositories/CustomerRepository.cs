@@ -10,21 +10,25 @@ namespace Chinook.Repositories
 {
     public class CustomerRepository : ICustomerRepository
     {
-
+        private string _connectionString;
+        
+        public CustomerRepository(string connectionString)
+        {
+            _connectionString = connectionString;
+        }
         public Customer GetById(int id)
         {
-            string connectionString = ConnectionStringHelper.GetConnectionString(false);
             Customer returnCustomer = null;
             try
             {
-                using(SqlConnection connection = new SqlConnection(connectionString))
+                using (SqlConnection connection = new SqlConnection(_connectionString))
                 {
                     connection.Open();
                     string sqlQuery = "Select CustomerId, FirstName, LastName, Country, PostalCode, Phone, Email FROM Customer where CustomerId = @id";
-                    using(SqlCommand cmd = new SqlCommand(sqlQuery, connection))
+                    using (SqlCommand cmd = new SqlCommand(sqlQuery, connection))
                     {
-                        cmd.Parameters.AddWithValue("@id", id); 
-                        using(SqlDataReader reader = cmd.ExecuteReader())
+                        cmd.Parameters.AddWithValue("@id", id);
+                        using (SqlDataReader reader = cmd.ExecuteReader())
                         {
                             while (reader.Read())
                             {
@@ -40,7 +44,7 @@ namespace Chinook.Repositories
                                 };
                                 returnCustomer = customer;
                             }
-                            
+
                         }
                     }
                 }
@@ -53,12 +57,11 @@ namespace Chinook.Repositories
         }
         public IEnumerable<Customer> GetAll()
         {
-            string connectionString = ConnectionStringHelper.GetConnectionString(false);
             List<Customer> customerList = new List<Customer>();
 
             try
             {
-                using (SqlConnection connection = new SqlConnection(connectionString))
+                using (SqlConnection connection = new SqlConnection(_connectionString))
                 {
                     connection.Open();
                     string sqlQuery = "Select CustomerId, FirstName, LastName, Country, PostalCode, Phone, Email FROM Customer";
@@ -93,6 +96,88 @@ namespace Chinook.Repositories
 
         }
 
+        public List<Customer> GetCustomerByName(string firstName)
+        {
+            List<Customer> customerList = new List<Customer>();
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                {
+                    connection.Open();
+                    string sqlQuery = "Select CustomerId, FirstName, LastName, Country, PostalCode, Phone, Email FROM Customer where FirstName LIKE @name";
+                    using (SqlCommand cmd = new SqlCommand(sqlQuery, connection))
+                    {
+                        cmd.Parameters.AddWithValue("@name", firstName);
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                Customer customer = new Customer()
+                                {
+                                    Id = reader.GetInt32(0),
+                                    FirstName = reader.IsDBNull(1) ? "null" : reader.GetString(1),
+                                    LastName = reader.IsDBNull(2) ? "null" : reader.GetString(2),
+                                    Country = reader.IsDBNull(3) ? "null" : reader.GetString(3),
+                                    PostalCode = reader.IsDBNull(4) ? "null" : reader.GetString(4),
+                                    PhoneNumber = reader.IsDBNull(5) ? "null" : reader.GetString(5),
+                                    Email = reader.IsDBNull(6) ? "null" : reader.GetString(6)
+                                };
+                                customerList.Add(customer);
+                            }
+
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            return customerList;
+        }
+
+        public List<Customer> GetCustomerPage(int limit, int offset)
+        {
+            List<Customer> customerList = new List<Customer>();
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                {
+                    connection.Open();
+                    string sqlQuery = "Select CustomerId, FirstName, LastName, Country, PostalCode, Phone, Email FROM Customer where CustomerId BETWEEN @limit AND @offset";
+                    using (SqlCommand cmd = new SqlCommand(sqlQuery, connection))
+                    {
+                        cmd.Parameters.AddWithValue("@limit", limit);
+                        cmd.Parameters.AddWithValue("@offset", offset);
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                Customer customer = new Customer()
+                                {
+                                    Id = reader.GetInt32(0),
+                                    FirstName = reader.IsDBNull(1) ? "null" : reader.GetString(1),
+                                    LastName = reader.IsDBNull(2) ? "null" : reader.GetString(2),
+                                    Country = reader.IsDBNull(3) ? "null" : reader.GetString(3),
+                                    PostalCode = reader.IsDBNull(4) ? "null" : reader.GetString(4),
+                                    PhoneNumber = reader.IsDBNull(5) ? "null" : reader.GetString(5),
+                                    Email = reader.IsDBNull(6) ? "null" : reader.GetString(6)
+                                };
+                                customerList.Add(customer);
+                            }
+
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            return customerList;
+
+        }
+
         public bool Add(Customer entity)
         {
             throw new NotImplementedException();
@@ -105,11 +190,5 @@ namespace Chinook.Repositories
         {
             throw new NotImplementedException();
         }
-
-     
-
-      
-
-      
     }
 }
