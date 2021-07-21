@@ -11,10 +11,12 @@ namespace Chinook.Repositories
     {
         public List<Customer> GetCustomerByName(string firstName);
 
-        public List<Customer> GetCustomerPage(int limit, int offset);
+        public List<Customer> GetCustomerPage(int start, int stop);
 
         public List<CustomerCountry> GetNumberOfCustomerInEachCountry();
 
         public List<CustomerSpender> GetHighestSpenders();
+
+        public List<CustomerGenre> GetCustomerMostPopularGenre(Customer customer);
     }
 }

@@ -10,7 +10,7 @@ namespace Chinook
     {
         static void Main(string[] args)
         {
-            string connectionString = ConnectionStringHelper.GetConnectionString(false);
+            string connectionString = ConnectionStringHelper.GetConnectionString(true);
             CustomerRepository cr = new CustomerRepository(connectionString);
             List<Customer> customerList = (List<Customer>)cr.GetAll();
             // One
@@ -78,6 +78,14 @@ namespace Chinook
                 Console.WriteLine($"{customerSpender.FirstName} - Total Spending: {customerSpender.TotalSpending}");
             }
 
+            // NIne
+            Console.WriteLine("-------------------");
+            Customer customerGenre = cr.GetById(12);
+            List<CustomerGenre> customerGenres = cr.GetCustomerMostPopularGenre(customerGenre);
+            foreach (CustomerGenre genre in customerGenres)
+            {
+                Console.WriteLine($"Genre: {genre.Genre} - Count: {genre.GenreCount}");
+            }
         }
     }
 }

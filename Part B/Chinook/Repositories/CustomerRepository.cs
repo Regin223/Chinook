@@ -136,7 +136,7 @@ namespace Chinook.Repositories
             return customerList;
         }
 
-        public List<Customer> GetCustomerPage(int limit, int offset)
+        public List<Customer> GetCustomerPage(int start, int stop)
         {
             List<Customer> customerList = new List<Customer>();
             try
@@ -144,11 +144,11 @@ namespace Chinook.Repositories
                 using (SqlConnection connection = new SqlConnection(_connectionString))
                 {
                     connection.Open();
-                    string sqlQuery = "Select CustomerId, FirstName, LastName, Country, PostalCode, Phone, Email FROM Customer where CustomerId BETWEEN @limit AND @offset";
+                    string sqlQuery = "Select CustomerId, FirstName, LastName, Country, PostalCode, Phone, Email FROM Customer where CustomerId BETWEEN @start AND @stop";
                     using (SqlCommand cmd = new SqlCommand(sqlQuery, connection))
                     {
-                        cmd.Parameters.AddWithValue("@limit", limit);
-                        cmd.Parameters.AddWithValue("@offset", offset);
+                        cmd.Parameters.AddWithValue("@start", start);
+                        cmd.Parameters.AddWithValue("@stop", stop);
                         using (SqlDataReader reader = cmd.ExecuteReader())
                         {
                             while (reader.Read())
@@ -217,8 +217,9 @@ namespace Chinook.Repositories
                 using (SqlConnection connection = new SqlConnection(_connectionString))
                 {
                     connection.Open();
-                    string sqlQuery = "SELECT Customer.CustomerId, Customer.FirstName,Invoice.Total FROM Customer INNER JOIN Invoice ON Customer.CustomerId = Invoice.CustomerId " +
-                        "ORDER BY Total DESC";
+                    string sqlQuery = "SELECT Customer.CustomerId, Customer.FirstName, sum(Invoice.Total) AS TotalSpent FROM Customer INNER JOIN Invoice ON " +
+                        "Customer.CustomerId = Invoice.CustomerId GROUP BY Customer.CustomerId, Customer.FirstName " +
+                        "ORDER BY TotalSpent DESC";
                     using (SqlCommand cmd = new SqlCommand(sqlQuery, connection))
                     {
                         using (SqlDataReader reader = cmd.ExecuteReader())
@@ -242,6 +243,64 @@ namespace Chinook.Repositories
                 Console.WriteLine(e.Message);
             }
             return customerSpenders;
+        }
+
+        public List<CustomerGenre> GetCustomerMostPopularGenre(Customer customer)
+        {
+            List<CustomerGenre> customerGenreList = new List<CustomerGenre>();
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                {
+                    connection.Open();
+                    string sqlQuery = "SELECT Genre.Name as Genre,count(Genre.Name) as GenreCount FROM Genre INNER JOIN Track on Track.GenreId = Genre.GenreId " +
+                        "INNER JOIN InvoiceLine on InvoiceLine.TrackId = Track.TrackId " +
+                        "INNER JOIN Invoice on Invoice.InvoiceId = InvoiceLine.InvoiceId " +
+                        "INNER JOIN Customer on Customer.CustomerId = Invoice.CustomerId " +
+                        "where Customer.CustomerId = @id " +
+                        "Group BY Genre.Name " +
+                        "Order By GenreCount DESC";
+                    using (SqlCommand cmd = new SqlCommand(sqlQuery, connection))
+                    {
+                        cmd.Parameters.AddWithValue("@id", customer.Id);
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                CustomerGenre customerGenre = new CustomerGenre()
+                                {
+                                    Genre = reader.IsDBNull(1) ? "null" : reader.GetString(0),
+                                    GenreCount = reader.IsDBNull(0) ? 0 : reader.GetInt32(1),
+                                    
+                                };
+                                customerGenreList.Add(customerGenre);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            if(customerGenreList.Count() > 1)
+            {
+                List<CustomerGenre> temp = new List<CustomerGenre>();
+                temp.Add(customerGenreList[0]);
+
+                for (int i = 1; i < customerGenreList.Count; i++)
+                {
+                    if (customerGenreList[i].GenreCount < temp[0].GenreCount)
+                        break;
+                    else
+                        temp.Add(customerGenreList[i]);
+
+                }
+                customerGenreList = temp;
+            }
+            
+
+            return customerGenreList;
         }
 
         public bool Add(Customer entity)
