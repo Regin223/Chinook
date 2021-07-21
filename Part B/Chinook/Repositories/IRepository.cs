@@ -17,7 +17,5 @@ namespace Chinook.Repositories
 
         bool Edit(T entity);
 
-        bool Delete(T entity);
-
     }
 }
