@@ -2,12 +2,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Data.SqlClient;
 
 namespace Chinook.Repositories
 {
+    /// <summary>
+    /// Class <c>CustomerRepository</c> implementing ICustomerRepository
+    /// </summary>
     public class CustomerRepository : ICustomerRepository
     {
         private string _connectionString;
@@ -16,6 +17,12 @@ namespace Chinook.Repositories
         {
             _connectionString = connectionString;
         }
+
+        /// <summary>
+        /// Get a specific customer from the database by Id
+        /// </summary>
+        /// <param name="id">CustomerId</param>
+        /// <returns>A specific customer</returns>
         public Customer GetById(int id)
         {
             Customer returnCustomer = null;
@@ -55,6 +62,11 @@ namespace Chinook.Repositories
             }
             return returnCustomer;
         }
+
+        /// <summary>
+        /// Get all customer from the database
+        /// </summary>
+        /// <returns>List of customers</returns>
         public IEnumerable<Customer> GetAll()
         {
             List<Customer> customerList = new List<Customer>();
@@ -96,6 +108,11 @@ namespace Chinook.Repositories
 
         }
 
+        /// <summary>
+        /// Get a specific custmer by name
+        /// </summary>
+        /// <param name="firstName">Customer first name</param>
+        /// <returns>A list of customers</returns>
         public List<Customer> GetCustomerByName(string firstName)
         {
             List<Customer> customerList = new List<Customer>();
@@ -136,6 +153,12 @@ namespace Chinook.Repositories
             return customerList;
         }
 
+        /// <summary>
+        /// Get a subset of the customer data from the database between the start and stop values
+        /// </summary>
+        /// <param name="start">Where to begin selcting customers</param>
+        /// <param name="stop">Where to stop selecting customers</param>
+        /// <returns>number of customers between the start and stop value</returns>
         public List<Customer> GetCustomerPage(int start, int stop)
         {
             List<Customer> customerList = new List<Customer>();
@@ -177,6 +200,11 @@ namespace Chinook.Repositories
             return customerList;
 
         }
+
+        /// <summary>
+        /// Get number of customers in each country (high to low)
+        /// </summary>
+        /// <returns>a list of customerCountry</returns>
         public List<CustomerCountry> GetNumberOfCustomerInEachCountry()
         {
             List<CustomerCountry> customersByCountries = new List<CustomerCountry>();
@@ -209,6 +237,11 @@ namespace Chinook.Repositories
             }
             return customersByCountries;
         }
+
+        /// <summary>
+        /// Get the customers who are the higest spenders (high to low)
+        /// </summary>
+        /// <returns>A list of CustomerSpenders</returns>
         public List<CustomerSpender> GetHighestSpenders()
         {
             List<CustomerSpender> customerSpenders = new List<CustomerSpender>();
@@ -245,6 +278,11 @@ namespace Chinook.Repositories
             return customerSpenders;
         }
 
+        /// <summary>
+        /// Get the most popular genre for a specific customer
+        /// </summary>
+        /// <param name="customer"></param>
+        /// <returns>A list of CostumerGenre</returns>
         public List<CustomerGenre> GetCustomerMostPopularGenre(Customer customer)
         {
             List<CustomerGenre> customerGenreList = new List<CustomerGenre>();
@@ -303,6 +341,11 @@ namespace Chinook.Repositories
             return customerGenreList;
         }
 
+        /// <summary>
+        /// Add a new customer to the database
+        /// </summary>
+        /// <param name="entity">A customer</param>
+        /// <returns>true if query succeded</returns>
         public bool Add(Customer entity)
         {
             bool returnValue = false;
@@ -334,6 +377,12 @@ namespace Chinook.Repositories
             }
             return returnValue;
         }
+
+        /// <summary>
+        /// Update an existing customer
+        /// </summary>
+        /// <param name="entity">A customer</param>
+        /// <returns>true if update succeded</returns>
         public bool Edit(Customer entity)
         {
             bool returnValue = false;
