@@ -7,6 +7,10 @@ using Chinook.Models;
 
 namespace Chinook.Repositories
 {
+    /// <summary>
+    /// Generic interface <c>IRepository</c> with methods to add, edit, and get.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public interface IRepository<T>
     {
         T GetById(int id);

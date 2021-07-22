@@ -8,6 +8,10 @@ namespace Chinook.Models
 {
     public class Customer
     {
+        /// <summary>
+        /// Class <c>Customer</c> represent the model for a customer with necesrray properties 
+        /// according to the assignment instruction
+        /// </summary>
         public int Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }

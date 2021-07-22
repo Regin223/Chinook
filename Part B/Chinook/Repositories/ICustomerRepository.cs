@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Chinook.Models;
 
 namespace Chinook.Repositories
 {
+    /// <summary>
+    /// Interface <c>ICustomerRepository</c> implementing IRepository type Customer
+    /// </summary>
     public interface ICustomerRepository : IRepository<Customer>
     {
         public List<Customer> GetCustomerByName(string firstName);

@@ -23,6 +23,8 @@ namespace Chinook.Repositories
         /// </summary>
         /// <param name="id">CustomerId</param>
         /// <returns>A specific customer</returns>
+        /// <exception cref="SqlException"></exception>
+        /// <exception cref="Exception"></exception>
         public Customer GetById(int id)
         {
             Customer returnCustomer = null;
@@ -56,10 +58,17 @@ namespace Chinook.Repositories
                     }
                 }
             }
+            catch(SqlException ex)
+            {
+                // Log
+                Console.WriteLine("Get by id: " + ex.Message);
+            }
             catch(Exception e)
             {
+                //Log
                 Console.WriteLine(e.Message);
             }
+                    
             return returnCustomer;
         }
 
@@ -67,6 +76,8 @@ namespace Chinook.Repositories
         /// Get all customer from the database
         /// </summary>
         /// <returns>List of customers</returns>
+        /// <exception cref="SqlException"></exception>
+        /// <exception cref="Exception"></exception>
         public IEnumerable<Customer> GetAll()
         {
             List<Customer> customerList = new List<Customer>();
@@ -101,7 +112,13 @@ namespace Chinook.Repositories
             }
             catch (SqlException ex)
             {
-                Console.WriteLine(ex.Message);
+                // Log
+                Console.WriteLine("Get all: " + ex.Message);
+            }
+            catch (Exception e)
+            {
+                //Log
+                Console.WriteLine(e.Message);
             }
 
             return customerList;
@@ -113,6 +130,8 @@ namespace Chinook.Repositories
         /// </summary>
         /// <param name="firstName">Customer first name</param>
         /// <returns>A list of customers</returns>
+        /// <exception cref="SqlException"></exception>
+        /// <exception cref="Exception"></exception>
         public List<Customer> GetCustomerByName(string firstName)
         {
             List<Customer> customerList = new List<Customer>();
@@ -146,8 +165,14 @@ namespace Chinook.Repositories
                     }
                 }
             }
+            catch (SqlException ex)
+            {
+                // Log
+                Console.WriteLine("Customer by name: " + ex.Message);
+            }
             catch (Exception e)
             {
+                //Log
                 Console.WriteLine(e.Message);
             }
             return customerList;
@@ -159,6 +184,8 @@ namespace Chinook.Repositories
         /// <param name="start">Where to begin selcting customers</param>
         /// <param name="stop">Where to stop selecting customers</param>
         /// <returns>number of customers between the start and stop value</returns>
+        /// <exception cref="SqlException"></exception>
+        /// <exception cref="Exception"></exception>
         public List<Customer> GetCustomerPage(int start, int stop)
         {
             List<Customer> customerList = new List<Customer>();
@@ -193,8 +220,14 @@ namespace Chinook.Repositories
                     }
                 }
             }
+            catch (SqlException ex)
+            {
+                // Log
+                Console.WriteLine("Customer page: " + ex.Message);
+            }
             catch (Exception e)
             {
+                //Log
                 Console.WriteLine(e.Message);
             }
             return customerList;
@@ -205,6 +238,8 @@ namespace Chinook.Repositories
         /// Get number of customers in each country (high to low)
         /// </summary>
         /// <returns>a list of customerCountry</returns>
+        /// <exception cref="SqlException"></exception>
+        /// <exception cref="Exception"></exception>
         public List<CustomerCountry> GetNumberOfCustomerInEachCountry()
         {
             List<CustomerCountry> customersByCountries = new List<CustomerCountry>();
@@ -231,8 +266,14 @@ namespace Chinook.Repositories
                     }
                 }
             }
+            catch (SqlException ex)
+            {
+                // Log
+                Console.WriteLine("Customers in each country: " + ex.Message);
+            }
             catch (Exception e)
             {
+                //Log
                 Console.WriteLine(e.Message);
             }
             return customersByCountries;
@@ -242,6 +283,8 @@ namespace Chinook.Repositories
         /// Get the customers who are the higest spenders (high to low)
         /// </summary>
         /// <returns>A list of CustomerSpenders</returns>
+        /// <exception cref="SqlException"></exception>
+        /// <exception cref="Exception"></exception>
         public List<CustomerSpender> GetHighestSpenders()
         {
             List<CustomerSpender> customerSpenders = new List<CustomerSpender>();
@@ -271,8 +314,14 @@ namespace Chinook.Repositories
                     }
                 }
             }
+            catch (SqlException ex)
+            {
+                // Log
+                Console.WriteLine("High spender: " + ex.Message);
+            }
             catch (Exception e)
             {
+                //Log
                 Console.WriteLine(e.Message);
             }
             return customerSpenders;
@@ -283,6 +332,8 @@ namespace Chinook.Repositories
         /// </summary>
         /// <param name="customer"></param>
         /// <returns>A list of CostumerGenre</returns>
+        /// <exception cref="SqlException"></exception>
+        /// <exception cref="Exception"></exception>
         public List<CustomerGenre> GetCustomerMostPopularGenre(Customer customer)
         {
             List<CustomerGenre> customerGenreList = new List<CustomerGenre>();
@@ -317,11 +368,17 @@ namespace Chinook.Repositories
                     }
                 }
             }
+            catch (SqlException ex)
+            {
+                // Log
+                Console.WriteLine("Popular genre: " + ex.Message);
+            }
             catch (Exception e)
             {
+                //Log
                 Console.WriteLine(e.Message);
             }
-            if(customerGenreList.Count() > 1)
+            if (customerGenreList.Count() > 1)
             {
                 List<CustomerGenre> temp = new List<CustomerGenre>();
                 temp.Add(customerGenreList[0]);
@@ -345,7 +402,9 @@ namespace Chinook.Repositories
         /// Add a new customer to the database
         /// </summary>
         /// <param name="entity">A customer</param>
-        /// <returns>true if query succeded</returns>
+        /// <returns>true if query succeeded</returns>
+        /// <exception cref="SqlException"></exception>
+        /// <exception cref="Exception"></exception>
         public bool Add(Customer entity)
         {
             bool returnValue = false;
@@ -371,8 +430,14 @@ namespace Chinook.Repositories
                 }
                
             }
+            catch (SqlException ex)
+            {
+                // Log
+                Console.WriteLine("Add: " + ex.Message);
+            }
             catch (Exception e)
             {
+                //Log
                 Console.WriteLine(e.Message);
             }
             return returnValue;
@@ -382,7 +447,9 @@ namespace Chinook.Repositories
         /// Update an existing customer
         /// </summary>
         /// <param name="entity">A customer</param>
-        /// <returns>true if update succeded</returns>
+        /// <returns>true if update succeeded</returns>
+        /// <exception cref="SqlException"></exception>
+        /// <exception cref="Exception"></exception>
         public bool Edit(Customer entity)
         {
             bool returnValue = false;
@@ -408,8 +475,14 @@ namespace Chinook.Repositories
                     }
                 }
             }
+            catch (SqlException ex)
+            {
+                // Log
+                Console.WriteLine("Edit:" + ex.Message);
+            }
             catch (Exception e)
             {
+                //Log
                 Console.WriteLine(e.Message);
             }
             return returnValue;

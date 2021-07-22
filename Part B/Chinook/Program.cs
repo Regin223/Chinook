@@ -2,68 +2,74 @@
 using System.Collections.Generic;
 using Chinook.Models;
 using Chinook.Repositories;
-using Microsoft.Data.SqlClient;
 
 namespace Chinook
 {
+    /// <summary>
+    /// Class <c>Progam</c> displays the results for each nine queries in the assignment.
+    /// </summary>
     class Program
     {
         static void Main(string[] args)
         {
-            string connectionString = ConnectionStringHelper.GetConnectionString(true);
+            string dataSource = "N-SE-01-3007\\SQLEXPRESS"; // Marcus
+            //string dataSource = "DESKTOP-MKQHIVD\\SQLEXPRESS"; // Måns
+            string connectionString = ConnectionStringHelper.GetConnectionString(dataSource);
             CustomerRepository cr = new CustomerRepository(connectionString);
-            List<Customer> customerList = (List<Customer>)cr.GetAll();
+           
             // One
+            Console.WriteLine("One\n----------------------------------------");
+            List<Customer> customerList = (List<Customer>)cr.GetAll();
             foreach (Customer cust in customerList)
             {
                 Console.WriteLine(cust.FirstName);
             }
-            Console.WriteLine("-------------------");
-            // Two
+            
+            //Two
+            Console.WriteLine("\nTwo\n----------------------------------------");
             Customer customer = cr.GetById(2);
             Console.WriteLine(customer.FirstName);
+            
             // Three
+            Console.WriteLine("\nThree\n--------------------------------------");
             List<Customer> customerListTwo = cr.GetCustomerByName("Marc");
-            Console.WriteLine("-------------------");
             foreach (Customer c in customerListTwo)
             {
                 Console.WriteLine(c.FirstName);
             }
-            Console.WriteLine("-------------------");
-            // Four
+
+            //Four
+            Console.WriteLine("\nFour\n---------------------------------------");
             List<Customer> customerPageList = cr.GetCustomerPage(2, 5);
             foreach (Customer c in customerPageList)
             {
                 Console.WriteLine($"First name: {c.FirstName} and Country: {c.Country}");
             }
-            // Five 
-            Console.WriteLine("-------------------");
-            Customer addCustomer = new Customer()
-            {
-                FirstName = "Ted",
-                LastName = "Svensson",
-                Country = "Sweden",
-                PostalCode = "35232",
-                PhoneNumber = "0703697899",
-                Email = "Ted.Svensson@gmail.com"
-            };
-            //if (cr.Add(addCustomer))
+
+            //// UNCOMMENT TO TEST ADD AND EDIT FUNCTIONS
+            //// Five 
+            //Console.WriteLine("\nFive\n---------------------------------------");
+            //Customer addCustomer = new Customer()
             //{
-            //    Console.WriteLine("Add completed");
-            //}
-            //else
-            //{
-            //    Console.WriteLine("Not able to add customer");
-            //}
-            //Six
-            //Console.WriteLine("-------------------");
-            //Customer Ted = cr.GetById(60);
-            //Ted.LastName = "Karlsson";
-            //string returnValue = cr.Edit(Ted) ? "Update success" : "Not able to update";
-            //Console.WriteLine(returnValue);
+            //    FirstName = "Krille",
+            //    LastName = "Larsson",
+            //    Country = "Sweden",
+            //    PostalCode = "35232",
+            //    PhoneNumber = "0703697899",
+            //    Email = "Ted.Svensson@gmail.com"
+            //};
+            //string returnValueAdd = cr.Add(addCustomer) ? "Add succeeded" : "Not able to add customer";
+            //Console.WriteLine(returnValueAdd);
+
+            ////Six
+            //Console.WriteLine("\nSix\n----------------------------------------");
+            //Customer customerToEdit = cr.GetById(60);
+            //customerToEdit.LastName = "Svensson";
+            //string returnValueEdit = cr.Edit(customerToEdit) ? "Update succeeded" : "Not able to update customer";
+            //Console.WriteLine(returnValueEdit);
 
             // Seven
-            Console.WriteLine("-------------------");
+            Console.WriteLine("\nSeven\n--------------------------------------");
             List<CustomerCountry> customerCountries = cr.GetNumberOfCustomerInEachCountry();
             foreach(CustomerCountry customerCountry in customerCountries)
             {
@@ -71,15 +77,15 @@ namespace Chinook
             }
 
             // Eight 
-            Console.WriteLine("-------------------");
+            Console.WriteLine("\nEight\n--------------------------------------");
             List<CustomerSpender> customerSpenders = cr.GetHighestSpenders();
             foreach(CustomerSpender customerSpender in customerSpenders)
             {
                 Console.WriteLine($"{customerSpender.FirstName} - Total Spending: {customerSpender.TotalSpending}");
             }
 
-            // NIne
-            Console.WriteLine("-------------------");
+            // Nine
+            Console.WriteLine("\nNinen\n---------------------------------------");
             Customer customerGenre = cr.GetById(12);
             List<CustomerGenre> customerGenres = cr.GetCustomerMostPopularGenre(customerGenre);
             foreach (CustomerGenre genre in customerGenres)
